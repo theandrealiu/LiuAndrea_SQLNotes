@@ -47,6 +47,7 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
         onCreate(db);
     }
 
+
     public boolean insertData(String name, String number, String address){
         Log.d("MyContactApp", "DataBaseHelper:  inserting data");
         SQLiteDatabase db = this.getWritableDatabase();
