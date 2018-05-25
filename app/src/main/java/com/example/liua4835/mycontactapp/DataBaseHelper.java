@@ -1,6 +1,7 @@
 package com.example.liua4835.mycontactapp;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -25,7 +26,7 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
                     ADDRESS + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_ADDRESS_CONTACT + " TEXT)";
 
-    public static final String SQUL_DELETE_ENTRIES =
+    public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     public DataBaseHelper(Context context){
@@ -43,7 +44,7 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d("MyContactApp", "DataBaseHelper:  upgrading database");
-        db.execSQL(SQUL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
 
@@ -69,8 +70,13 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
 
     }
 
+    public Cursor getAllData(){
+        Log.d("MyContactApp", "DataBaseHelper: calling getAllData method");
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
+        return res;
+
+    }
+
 
 }
-
-
-
