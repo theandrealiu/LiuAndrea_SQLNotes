@@ -1,6 +1,8 @@
 package com.example.liua4835.mycontactapp;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,45 +32,61 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MyContactApp", "DataBaseHelper:  instantiated database");
     }
 
-    public void addData(View view){
+    public void addData(View view) {
         Log.d("MyContactApp", "MainActivity: Add contact button pressed");
 
-        boolean isInserted = myDb.insertData(editName.getText().toString(),editPhone.getText().toString(),editAddress.getText().toString());
-
-        if(isInserted == true){
-            Toast.makeText(MainActivity.this,"Success - contact inserted", Toast.LENGTH_LONG).show();
+        boolean isInserted = myDb.insertData(editName.getText().toString(), editPhone.getText().toString(), editAddress.getText().toString());
+        if (isInserted) {
+            Toast.makeText(this, "Success - Contact inserted", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Failed - Contact not inserted", Toast.LENGTH_LONG).show();
         }
-        else{
-            Toast.makeText(MainActivity.this,"Failed - contact NOT inserted", Toast.LENGTH_LONG).show();
-
-        }
-
     }
-    public void viewData(View view){
+    public void viewData(View view) {
         Cursor res = myDb.getAllData();
-        Log.d("MyContactApp", "MainActivity: viewData: received cursor" + res.getCount());
-        if(res.getCount() == 0){
+        Log.d("MyContactApp", "MainActivity: viewData: received cursor");
+
+        if (res.getCount() == 0) {
             showMessage("Error", "No data found in database");
+            return;
         }
 
-        StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            //Append the res column 0, 1, 2, 3
-
+        StringBuffer sb = new StringBuffer();
+        while(res.moveToNext()) {
+            // append res column 0,1,2,3 to buffer - see StringBuffer and Cursor API
+            // delimit each of the "appends" with line feed "\n"
+            for (int i = 0; i < 4; i++) {
+                sb.append(res.getColumnName(i) + ": " + res.getString(i) + "\n");
+            }
+            sb.append("\n");
         }
-        Log.d("MyContactApp", "MainActivity: viewData: assembled stringBuffer");
-        showMessage("Data", buffer.toString());
 
+        showMessage("Data", sb.toString());
     }
 
-    public void showMessage(String title, String message) {
-        Log.d("MyContactApp", "MainActivity: showMessage: building alert dialog");
 
+    private void showMessage(String title, String message) {
+        Log.d("MyContactApp", "MainActivity: showMessage: assembling AlertDialogue");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    public static final String EXTRA_MESSAGE = "com.example.liua4835.mycontactapp.MESSAGE";
+    public static final String EXTRA_NUMBER = "com.example.liua4835.mycontactapp.NUMBER";
+    public static final String EXTRA_EMAIL = "com.example.liua4835.mycontactapp.EMAIL";
+
+    public void SearchRecord(View view){
+        Log.d("MyContactApp", "MainActivity: launching SearchActivity");
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, editName.getText().toString());
+        intent.putExtra(EXTRA_NUMBER, editPhone.getText().toString());
+        intent.putExtra(EXTRA_EMAIL, editAddress.getText().toString());
+        startActivity(intent);
+
+
     }
 
 }

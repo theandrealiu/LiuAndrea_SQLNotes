@@ -1,5 +1,6 @@
 package com.example.liua4835.mycontactapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,11 +21,11 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_NAME_CONTACT + " TEXT)" + " (" +
-                        PHONE + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_NUMBER_CONTACT + " TEXT)" + " (" +
+                    COLUMN_NAME_CONTACT + " TEXT)"  + " (" +
+                    PHONE + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    COLUMN_NUMBER_CONTACT + " TEXT)"  + " (" +
                     ADDRESS + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_ADDRESS_CONTACT + " TEXT)";
+                   COLUMN_ADDRESS_CONTACT + " TEXT)";
 
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -49,34 +50,31 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
     }
 
 
-    public boolean insertData(String name, String number, String address){
-        Log.d("MyContactApp", "DataBaseHelper:  inserting data");
+    public boolean insertData(String name, String phone, String email) {
+        Log.d("MyContactApp", "DatabaseHelper: inserting data");
         SQLiteDatabase db = this.getWritableDatabase();
-        android.content.ContentValues contentValue = new android.content.ContentValues();
-        contentValue.put(COLUMN_NAME_CONTACT, name);
-        contentValue.put(COLUMN_NUMBER_CONTACT, number);
-        contentValue.put(COLUMN_ADDRESS_CONTACT, address);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_CONTACT, name);
+        contentValues.put(COLUMN_NUMBER_CONTACT, phone);
+        contentValues.put(COLUMN_ADDRESS_CONTACT, email);
 
+        long result = db.insert(TABLE_NAME, null, contentValues);
 
-        long result = db.insert(TABLE_NAME,null,contentValue);
-        if(result == -1){
-            Log.d("MyContactApp", "DataBaseHelper: Contact insert = FAILED");
+        if (result == -1) {
+            Log.d("MyContactApp", "DatabaseHelper: Contact insert - FAILED");
             return false;
-        }
-        else{
-            Log.d("MyContactApp", "DataBaseHelper: Contact insert = PASSED");
+        } else {
+            Log.d("MyContactApp", "DatabaseHelper: Contact insert - PASSED");
             return true;
         }
-
     }
 
-    public Cursor getAllData(){
-        Log.d("MyContactApp", "DataBaseHelper: calling getAllData method");
+    public Cursor getAllData() {
+        Log.d("MyContactApp", "DatabaseHelper: pulling all records from db");
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
         return res;
-
     }
-
-
 }
+
+
