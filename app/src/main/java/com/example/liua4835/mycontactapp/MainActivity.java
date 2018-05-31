@@ -75,18 +75,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static final String EXTRA_MESSAGE = "com.example.liua4835.mycontactapp.MESSAGE";
-    public static final String EXTRA_NUMBER = "com.example.liua4835.mycontactapp.NUMBER";
-    public static final String EXTRA_EMAIL = "com.example.liua4835.mycontactapp.EMAIL";
 
-    public void SearchRecord(View view){
-        Log.d("MyContactApp", "MainActivity: launching SearchActivity");
+    public void SearchRecord(View view) {
+        Log.d("MyContactApp", "MainActivity: launching my SearchActivity");
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, editName.getText().toString());
-        intent.putExtra(EXTRA_NUMBER, editPhone.getText().toString());
-        intent.putExtra(EXTRA_EMAIL, editAddress.getText().toString());
+        intent.putExtra(EXTRA_MESSAGE, getRecords());
         startActivity(intent);
-
 
     }
 
-}
+
+    private String getRecords() {
+        Cursor res = myDb.getAllData();
+        Log.d("MyContactApp", "MainActivity: getRecords: received cursor");
+        StringBuffer sb = new StringBuffer();
+        int contacts = 0;
+        while (res.moveToNext()) {
+            if (res.getString(1).equals(editName.getText().toString())) {
+                for (int i = 1; i < 4; i++) {
+                    sb.append(res.getColumnName(i) + ": " + res.getString(i) + "\n");
+                }
+                sb.append("\n");
+                contacts++;
+            }
+        }
+        if (contacts == 0) {
+            return "No contact was found :(";
+        }
+        else {
+            return sb.toString();
+        }
+    }
+
+    }
