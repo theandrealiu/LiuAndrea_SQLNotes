@@ -7,27 +7,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DataBaseHelper  extends SQLiteOpenHelper{
+
+public class DataBaseHelper extends SQLiteOpenHelper {
+
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Contact2018.db";
-    public static final String TABLE_NAME = "Contact2018_Table";
+    public static final String TABLE_NAME = "Contact2018Table";
     public static final String ID = "ID";
-    public static final String PHONE = "PhoneNumber";
-    public static final String ADDRESS = "ContactAddress";
 
-    public static final String COLUMN_NAME_CONTACT = "ContactName";
-    public static final String COLUMN_NUMBER_CONTACT = "ContactNumber";
-    public static final String COLUMN_ADDRESS_CONTACT = "ContactAddress";
+    public static final String COLUMN_NAME_CONTACT = "Name";
+    public static final String COLUMN_NAME_PHONE = "Phone";
+    public static final String COLUMN_NAME_EMAIL = "Email";
+
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_NAME_CONTACT + " TEXT)"  + " (" +
-                    PHONE + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_NUMBER_CONTACT + " TEXT)"  + " (" +
-                    ADDRESS + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                   COLUMN_ADDRESS_CONTACT + " TEXT)";
+                    COLUMN_NAME_CONTACT + ", " + COLUMN_NAME_PHONE + ", " + COLUMN_NAME_EMAIL + " TEXT)";
 
-    public static final String SQL_DELETE_ENTRIES =
+    public static  final  String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     public DataBaseHelper(Context context){
@@ -37,26 +34,24 @@ public class DataBaseHelper  extends SQLiteOpenHelper{
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db){
-        Log.d("MyContactApp", "DataBaseHelper:  creating database");
+    public void onCreate(SQLiteDatabase db) {
+        Log.d("MyContactApp", "DatabaseHelper: creating database");
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("MyContactApp", "DataBaseHelper:  upgrading database");
+        Log.d("MyContactApp", "DatabaseHelper: upgrading database");
         db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
     }
-
 
     public boolean insertData(String name, String phone, String email) {
         Log.d("MyContactApp", "DatabaseHelper: inserting data");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_CONTACT, name);
-        contentValues.put(COLUMN_NUMBER_CONTACT, phone);
-        contentValues.put(COLUMN_ADDRESS_CONTACT, email);
+        contentValues.put(COLUMN_NAME_PHONE, phone);
+        contentValues.put(COLUMN_NAME_EMAIL, email);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
